@@ -1,18 +1,7 @@
-
-# coding: utf-8
-
-# # Demo EfficientLoFTR on a single pair of images
-# 
-# This notebook shows how to use the eloftr matcher with different model type and numerical precision on the pretrained weights.
-
-# In[3]:
-
-
 import os
 os.chdir("..")
 
 from copy import deepcopy
-
 import torch
 import cv2
 import numpy as np
@@ -46,8 +35,7 @@ if precision == 'mp':
     _default_cfg['mp'] = True
 elif precision == 'fp16':
     _default_cfg['half'] = True
-    
-print("debug francesco")
+
 print(_default_cfg)
 matcher = LoFTR(config=_default_cfg)
 
@@ -56,22 +44,19 @@ matcher = reparameter(matcher) # no reparameterization will lead to low performa
 
 if precision == 'fp16':
     matcher = matcher.half()
-print("debug francesco 2")
 matcher = matcher.eval().cuda()
-print("debug francesco 3")
-save_path = 'render_synthetic_far_matches/'
-with open(save_path+'matches.txt', 'a') as file:
-	file.write("id     | matches\n ")
-folder_path = 'EfficientLoFTR/assets/r_sf_palestrina/'
+
+save_path = 'render_synthetic_far_matches/'  # TO_MODIFY -->decide where you want your results saved
+folder_path = 'EfficientLoFTR/assets/r_sf_palestrina/'  # TO_MODIFY -->decide where is your dataset
+
+with open(save_path+'matches.txt', 'w') as file:
+	file.write("id     | matches\n")
 images = os.listdir(folder_path)
 images = [f for f in os.listdir(folder_path) if os.path.isfile(os.path.join(folder_path, f))]
-
 # Sort the list of files by name
 images.sort()
-
 # Print the sorted list of files
 print(images)
-
 # Iterate over the files in the directory
 for i in range(0, len(images), 2):
 # Load example images
@@ -116,8 +101,8 @@ for i in range(0, len(images), 2):
 			'Matches: {}'.format(len(mkpts0)),
 			]
 	fig = make_matching_figure(img0_raw, img1_raw, mkpts0, mkpts1, color, text=text, path=save_path+"match"+str(i)+".png")
-# A high-res PDF will also be downloaded automatically. added by francesco
-	print("debug francesco fine iterazione")
+# A png image will also be downloaded automatically.
+	
 	with open(save_path+'matches.txt', 'a') as file:
     		file.write(str(i)+"  |  "+str(len(mkpts0))+"\n")
-print("fine programma francesco ")
+print("END")
